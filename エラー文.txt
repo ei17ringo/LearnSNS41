@@ -1,0 +1,31 @@
+①syntax error ~
+PHPの構文ミス
+1. 単純にカッコ忘れなどのミス
+2. ひとつ上の生きた行のセミコロン忘れ
+3. 制御文の閉じカッコ忘れ
+
+②Undefined ~
+未定義
+1. Undefined variable : ◯◯ ← 変数名
+2. Undefined offset: ◯◯ ← 配列のキー（数字）
+3. Undefined index: ◯◯ ← 配列のキー（数字）
+
+③PDOException ~ 
+データベース系
+1. SQLSTATE ~ ← SQL文が悪い
+2. Access denied ~ ← DB接続
+3. parameter number ~ ← ?と配列の値の数
+
+
+
+
+
+
+
+
+
+
+
+
+
+
