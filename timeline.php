@@ -42,6 +42,19 @@
         }
     }
 
+    $page = ''; //ページ番号が入る変数
+    $page_row_number = 5; //1ページあたりに表示するデータの数
+
+    if (isset($_GET['page'])){
+      $page = $_GET['page'];
+    }else{
+      //get送信されてるページ数がない場合、1ページめとみなす
+      $page = 1;
+    }
+
+    // データを取得する開始番号を計算
+    $start = ($page -1)*$page_row_number;
+
     //検索ボタンが押されたら、あいまい検索
     //検索ボタンが押された=GET送信されたsearch_wordというキーのデータが有る
     if (isset($_GET['search_word']) == true){
@@ -51,7 +64,7 @@
     }else{
       // 通常（検索ボタンを押していない）は全件取得
       // LEFT JOINで全件取得
-      $sql = 'SELECT `f`.*,`u`.`name`,`u`.`img_name` FROM `feeds` AS `f` LEFT JOIN `users` AS `u` ON `f`.`user_id`=`u`.`id` WHERE 1 ORDER BY `f`.`created` DESC';
+      $sql = "SELECT `f`.*,`u`.`name`,`u`.`img_name` FROM `feeds` AS `f` LEFT JOIN `users` AS `u` ON `f`.`user_id`=`u`.`id` WHERE 1 ORDER BY `f`.`created` DESC LIMIT $start,$page_row_number";
     }
 
     
@@ -203,7 +216,7 @@
       <div class="collapse navbar-collapse" id="navbar-collapse1">
         <ul class="nav navbar-nav">
           <li class="active"><a href="#">タイムライン</a></li>
-          <li><a href="#">ユーザー一覧</a></li>
+          <li><a href="user_index.php">ユーザー一覧</a></li>
         </ul>
         <form method="GET" action="" class="navbar-form navbar-left" role="search">
           <div class="form-group">
@@ -310,8 +323,14 @@
 
         <div aria-label="Page navigation">
           <ul class="pager">
-            <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
-            <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+            <!-- <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li> -->
+            <?php if ($page == 1) { ?>
+              <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Newer</a></li>
+            <?php }else{ ?>
+            <li class="previous"><a href="timeline.php?page=<?php echo $page-1; ?>"><span aria-hidden="true">&larr;</span> Newer</a></li>
+            <?php } ?>
+
+            <li class="next"><a href="timeline.php?page=<?php echo $page+1; ?>">Older <span aria-hidden="true">&rarr;</span></a></li>
           </ul>
         </div>
       </div>

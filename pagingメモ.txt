@@ -1,0 +1,34 @@
+
+SELECT * FROM `feeds` ORDER BY `created` DESC
+
+$pageに今表示するページ番号が代入されてる
+$page = 1; //1ページめ
+$page = 2; //2ページめ
+$page = 3; //3ページめ
+
+$start = ($page -1)*5;
+
+//最初の５件を取得
+SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 0,5
+
+//LIMIT句の使い方
+LIMIT 取得を開始したい場所（0から始まる),取得したい件数
+
+//次の5件を取得
+SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 5,5
+
+//その次の5件を取得
+SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 10,5
+
+5/30にやったこと
+・ページによって表示するデータを変えるために取得するSQLを変える（LIMIT句を使う）
+・Older,Newerボタンのリンク作成
+
+今後
+・Older,Newerのボタンを、押してほしくない時にはdisabledを追加するという条件分岐を追加
+・不正なページ番号を指定された場合の対処
+http://localhost/LearnSNS/timeline.php?page=2 //正常
+http://localhost/LearnSNS/timeline.php?page=-1 //不正
+http://localhost/LearnSNS/timeline.php?page=100 //不正（100ページも存在しないとき）
+
+
