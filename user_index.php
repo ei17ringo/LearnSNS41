@@ -19,6 +19,26 @@
       break;
     }
 
+// ここで代入するとfeed_cntが追加されてないレコードが代入されてしまう
+    // $users[] = $record;
+
+    // つぶやき数を取得するSQL文を作成
+    $feed_sql = "SELECT COUNT(*) AS `feed_cnt` FROM `feeds` WHERE `user_id` = ?";
+
+    //今回は$record["id"]はusers.idです
+    $feed_data = array($record["id"]);
+
+    // SQL文を実行
+    $feed_stmt = $dbh->prepare($feed_sql);
+    $feed_stmt->execute($feed_data);
+
+    // つぶやき数を取得
+    $feed = $feed_stmt->fetch(PDO::FETCH_ASSOC); 
+    // $feed = array("feed_cnt"=>3); 
+
+    $record["feed_cnt"] = $feed["feed_cnt"];
+
+
     //配列を追加代入する
     $users[] = $record;
   }
@@ -89,7 +109,7 @@
             
             <div class="row feed_sub">
               <div class="col-xs-12">
-                <span class="comment_count">つぶやき数 : 5</span>
+                <span class="comment_count">つぶやき数 : <?php echo $user["feed_cnt"]; ?></span>
               </div>
             </div>
           </div><!-- thumbnail -->
