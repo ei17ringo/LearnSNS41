@@ -42,6 +42,7 @@
         }
     }
 
+    // ----------------Pagingの処理--------------------
     $page = ''; //ページ番号が入る変数
     $page_row_number = 5; //1ページあたりに表示するデータの数
 
@@ -52,8 +53,39 @@
       $page = 1;
     }
 
+    //これと同じことをしてる関数
+    // if ($page < 0){
+    //   $page = 1;
+    // }
+    // max:カンマ区切りで羅列された数字の中から最大の数を返す
+    $page = max($page,1);
+
+    // データの件数から、最大ページ数を計算する
+    $sql_count = "SELECT COUNT(*) AS `cnt` FROM `feeds`";
+
+    //SQL実行
+    $stmt_count = $dbh->prepare($sql_count);
+    $stmt_count->execute();
+
+    $record_cnt = $stmt_count->fetch(PDO::FETCH_ASSOC);
+
+    //ページ数計算
+    // ceil 小数点の切り上げができる関数 2.1 -> 3に変換できる
+    $all_page_number = ceil($record_cnt['cnt'] / $page_row_number);
+
+    // 不正に大きい数字を指定された場合、最大ページ番号に変換
+    // これと同じことができる関数
+    // if($page > $all_page_number){
+    //   $page = $all_page_number;
+    // }
+    // min:カンマ区切りの数字の中から最小の数値を取得する関数
+    $page = min($page,$all_page_number);
+
     // データを取得する開始番号を計算
     $start = ($page -1)*$page_row_number;
+
+    // ----------------Pagingの処理--------------------
+
 
     //検索ボタンが押されたら、あいまい検索
     //検索ボタンが押された=GET送信されたsearch_wordというキーのデータが有る
@@ -151,7 +183,7 @@
 
         // feed_selectが指定されてないときは全件表示
         if (!isset($_GET["feed_select"])){
-            $feeds[] = $record;
+          $feeds[] = $record;
         }
 
         // 新着順が押されたとき、全件表示
@@ -307,7 +339,7 @@
                 <span class="like_count">いいね数 : <?php echo $feed["like_cnt"]; ?></span>
                 <?php } ?>
 
-                <span class="comment_count">コメント数 : 9</span>
+                <a href="#collapseComment<?php echo $feed["id"] ?>" data-toggle="collapse" aria-expanded="false"><span class="comment_count">コメント</span></a>
                   <?php if ($feed["user_id"] == $_SESSION["id"] ){ ?>
               
                   <a href="edit.php?feed_id=<?php echo $feed["id"] ?>" class="btn btn-success btn-xs">編集</a>
@@ -316,6 +348,12 @@
                   <?php } ?>
 
               </div>
+
+              <!-- コメントが押されたら表示される領域 -->
+              <!-- div class="collapse" id="collapseComment">
+                表示のかくにん！
+              </div -->
+              <?php include("comment_view.php"); ?>
             </div>
           </div>
         <?php } ?>
@@ -330,7 +368,11 @@
             <li class="previous"><a href="timeline.php?page=<?php echo $page-1; ?>"><span aria-hidden="true">&larr;</span> Newer</a></li>
             <?php } ?>
 
+            <?php if ($page == $all_page_number) { ?>
+              <li class="next disabled"><a href="#">Older <span aria-hidden="true">&rarr;</span></a></li>
+            <?php }else{ ?>
             <li class="next"><a href="timeline.php?page=<?php echo $page+1; ?>">Older <span aria-hidden="true">&rarr;</span></a></li>
+            <?php } ?>
           </ul>
         </div>
       </div>

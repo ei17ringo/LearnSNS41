@@ -22,7 +22,7 @@ SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 10,5
 
 5/30にやったこと
 ・ページによって表示するデータを変えるために取得するSQLを変える（LIMIT句を使う）
-・Older,Newerボタンのリンク作成
+・Newer,Olderボタンのリンク作成
 
 今後
 ・Older,Newerのボタンを、押してほしくない時にはdisabledを追加するという条件分岐を追加
@@ -30,5 +30,17 @@ SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 10,5
 http://localhost/LearnSNS/timeline.php?page=2 //正常
 http://localhost/LearnSNS/timeline.php?page=-1 //不正
 http://localhost/LearnSNS/timeline.php?page=100 //不正（100ページも存在しないとき）
+
+ページングの中で使用した関数
+ceil 切り上げできる関数 
+例）
+ceil(2.1)->3に変換できる
+max カンマ区切りで羅列した数字の最大の数字を返してくれてる関数 
+例）
+max(-1,1)->1が返ってくる
+min カンマ区切りで羅列した数字の最小の数字を返してくれる関数
+例）
+min(3,1000)->3が返ってくる
+
 
 
