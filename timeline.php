@@ -142,6 +142,35 @@
             break;
         }
 
+        //comment テーブルから今取得できているfeedに対してのデータを取得
+        $comment_sql = "SELECT `c`.*,`u`.`name`,`u`.`img_name` FROM `comments` AS `c` LEFT JOIN `users` AS `u` ON `c`.`user_id` = `u`.`id` WHERE `feed_id`=?";
+
+        $comment_data = array($record["id"]);
+
+        //sql実行
+        $comment_stmt = $dbh->prepare($comment_sql);
+        $comment_stmt->execute($comment_data);
+
+        //コメントを格納するための変数
+        $comments_array = array();
+
+        while (true) {
+          $comment_record = $comment_stmt->fetch(PDO::FETCH_ASSOC); 
+
+          if ($comment_record == false){
+            break;
+          }
+
+          //取得したコメントのデータを追加代入(重要！！)
+          $comments_array[] = $comment_record;
+
+
+        }
+
+        //一行分の変数（連想配列）に、新しくcomments というキーを追加し、コメント情報を代入（超重要！！）
+        $record["comments"] = $comments_array;
+
+
         // like数を取得するSQL文を作成
         $like_sql = "SELECT COUNT(*) AS `like_cnt` FROM `likes` WHERE `feed_id` = ?";
 
@@ -339,7 +368,19 @@
                 <span class="like_count">いいね数 : <?php echo $feed["like_cnt"]; ?></span>
                 <?php } ?>
 
-                <a href="#collapseComment<?php echo $feed["id"] ?>" data-toggle="collapse" aria-expanded="false"><span class="comment_count">コメント</span></a>
+
+
+                <a href="#collapseComment<?php echo $feed["id"] ?>" data-toggle="collapse" aria-expanded="false">
+                
+                <?php if ($feed["comment_count"] == 0){ ?>
+                  <span class="comment_count">コメント</span>
+                <?php }else{ ?>
+                  <span class="comment_count">コメント数：<?php echo $feed["comment_count"]; ?></span>
+                <?php } ?>
+                </a>
+              
+
+
                   <?php if ($feed["user_id"] == $_SESSION["id"] ){ ?>
               
                   <a href="edit.php?feed_id=<?php echo $feed["id"] ?>" class="btn btn-success btn-xs">編集</a>
