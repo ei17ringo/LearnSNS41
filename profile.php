@@ -41,8 +41,26 @@ while (true) {
 
 }
 
+//follower一覧の取得
+//今表示されてるプロフィールページの人が、フォローされてる
+$follower_sql = "SELECT `fw`.*,`u`.`name`,`u`.`img_name`,`u`.`created` FROM `followers` AS `fw` LEFT JOIN `users` AS `u` ON `fw`.`user_id` = `u`.`id` WHERE `follower_id`=?";
 
+$follower_data = array($user_id);
+$follower_stmt = $dbh->prepare($follower_sql);
+$follower_stmt->execute($follower_data);
 
+$follower = array();
+
+while (true) {
+  $follower_record = $follower_stmt->fetch(PDO::FETCH_ASSOC);
+
+  if ($follower_record == false){
+    break;
+  }
+
+  $follower[] = $follower_record;
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -110,39 +128,20 @@ while (true) {
         <!--タブの中身-->
         <div class="tab-content">
           <div id="tab1" class="tab-pane fade in active">
+            <?php foreach ($follower as $follower_user) { ?>
             <div class="thumbnail">
-              <div class="row">
-                <div class="col-xs-2">
-                  <img src="http://placehold.jp/80x80.png" width="80">
+                <div class="row">
+                  <div class="col-xs-2">
+                    <img src="user_profile_img/<?php echo $follower_user["img_name"]; ?>" width="80">
+                  </div>
+                  <div class="col-xs-10">
+                    名前 <?php echo $follower_user["name"]; ?><br>
+                    <a href="#" style="color: #7F7F7F;"><?php echo $follower_user["created"]; ?>からメンバー</a>
+                  </div>
                 </div>
-                <div class="col-xs-10">
-                  名前 オモえもん<br>
-                  <a href="#" style="color: #7F7F7F;">2018-05-29 10:00:00からメンバー</a>
-                </div>
-              </div>
-            </div>
-            <div class="thumbnail">
-              <div class="row">
-                <div class="col-xs-2">
-                  <img src="http://placehold.jp/80x80.png" width="80">
-                </div>
-                <div class="col-xs-10">
-                  名前 オモえもん2<br>
-                  <a href="#" style="color: #7F7F7F;">2018-05-29 10:00:00からメンバー</a>
-                </div>
-              </div>
-            </div>
-            <div class="thumbnail">
-              <div class="row">
-                <div class="col-xs-2">
-                  <img src="http://placehold.jp/80x80.png" width="80">
-                </div>
-                <div class="col-xs-10">
-                  名前 オモえもん2<br>
-                  <a href="#" style="color: #7F7F7F;">2018-05-29 10:00:00からメンバー</a>
-                </div>
-              </div>
-            </div><!-- thumbnail -->
+              </div><!-- thumbnail -->
+
+          <?php } ?>
           </div>
           <!-- following -->
           <div id="tab2" class="tab-pane fade">
