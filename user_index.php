@@ -1,6 +1,19 @@
 <?php
+  session_start();
   // DB接続
   require('dbconnect.php');
+  require('function.php');
+
+    // $sql = 'SELECT * FROM `users` WHERE `id`=?';
+    // $data = array($_SESSION['id']);
+    // $stmt = $dbh->prepare($sql);
+    // $stmt->execute($data);
+
+    // // $signin_user　に取り出したレコードを代入する
+    // $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //サインインしている人の情報を取得
+    $signin_user = get_signin_user($dbh,$_SESSION["id"]);
 
   //ユーザーの一覧を表示するため取得する
 
@@ -55,7 +68,7 @@
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 <body style="margin-top: 60px; background: #E4E6EB;">
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <!-- <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse1" aria-expanded="false">
@@ -88,7 +101,8 @@
         </ul>
       </div>
     </div>
-  </nav>
+  </nav> -->
+  <?php include("navbar.php"); ?>
 
   <div class="container">
   <?php foreach ($users as $user) { ?>
@@ -119,5 +133,8 @@
 
 
   </div><!-- class="cotainer" -->
+  <script src="assets/js/jquery-3.1.1.js"></script>
+  <script src="assets/js/jquery-migrate-1.4.1.js"></script>
+  <script src="assets/js/bootstrap.js"></script>
 </body>
 </html>
