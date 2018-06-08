@@ -1,0 +1,33 @@
+関数
+
+基本構造
+
+関数を宣言する書き方
+function 関数名(引数1, 引数2, ...){
+  // 実行される処理
+}
+
+//2つの数字を計算する関数
+function add_number(x,y){
+  echo x + y;
+}
+
+
+//関数の実行(3が表示される)
+add_number(1,2);
+
+
+//2つの数字を計算する(引き算する)関数
+// return 戻り値;(返り値)
+
+function mi_number(x,y){
+  return x - y;
+}
+
+//関数の実行
+$answer = mi_number(5,2);
+
+//呼び出した側で計算結果を続けて使える！
+$score = 100 - $answer;
+
+
